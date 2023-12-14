@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import "./Editor.css";
+import { storage } from '../../Firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import EditorJS from "@editorjs/editorjs";
 import Header from "@editorjs/Header";
 import Paragraph from "editorjs-paragraph-with-alignment";
@@ -40,7 +42,62 @@ const EditorCanvas = () => {
             },
           },
           image: {
-            class: SimpleImage,
+            class: ImageTool,
+            config: {
+              uploader: {
+                uploadByFile(file) {
+                  const imageName = `images/${file.name}`;
+                  const storageRef = ref(storage, imageName);
+                  const uploadTask = uploadBytesResumable(storageRef, file);
+
+                  return new Promise((resolve, reject) => {
+                    uploadTask.on(
+                      "state_changed",
+                      (snapshot) => {
+                        const progress =
+                          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log("Upload is " + progress + "% done");
+                        switch (snapshot.state) {
+                          case "paused":
+                            console.log("Upload is paused");
+                            break;
+                          case "running":
+                            console.log("Upload is running");
+                            break;
+                          default:
+                            break;
+                        }
+                      },
+                      (error) => {
+                        console.log(error)
+                      },
+                      () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+                          resolve({
+                            success: 1,
+                            file: {
+                              url,
+                            }
+                          })
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                          reject({
+                            success: 0,
+                            file: {
+                              url: '',
+                            },
+                            error: {
+                              message: 'Error getting download URL',
+                            },
+                          });
+                        });
+                      }
+                    );
+                  })
+                }
+              }
+            }
           },
           embed: {
             class: Embed,
@@ -76,7 +133,7 @@ const EditorCanvas = () => {
                 '#4C4F50',
                 '#FFF',
               ],
-              defaultColor: "#FF1300",
+              defaultColor: "#333333",
               customPicker: true
             }
           }

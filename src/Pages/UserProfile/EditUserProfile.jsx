@@ -83,7 +83,6 @@ const EditUserProfile = () => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            // console.log("File available at", downloadURL);
             setImgUrl(downloadURL)
           });
         }
