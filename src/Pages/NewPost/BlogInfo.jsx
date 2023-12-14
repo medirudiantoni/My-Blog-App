@@ -3,6 +3,7 @@ import { db, storage } from "../../Firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ButtonBlue, ButtonOrange } from "../../Components/Buttons/Button1";
+import "./Editor.css"
 import posterPNG from "../../assets/poster.png";
 import { PostContext } from "../../context/Post/PostContext";
 import { RootContext } from "../../context/Auth/RootContext";

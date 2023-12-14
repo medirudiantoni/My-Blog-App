@@ -17,6 +17,7 @@
     "@editorjs/embed": "^2.7.0",
     "@editorjs/header": "^2.8.1",
     "@editorjs/image": "^2.9.0",
+    "@editorjs/inline-code": "^1.5.0",
     "@editorjs/list": "^1.9.0",
     "@editorjs/marker": "^1.4.0",
     "@editorjs/paragraph": "^2.11.3",
@@ -29,11 +30,12 @@
     "editorjs-text-alignment-blocktune": "^1.0.3",
     "firebase": "^10.7.1",
     "framer-motion": "^10.16.16",
-    "novel": "^0.1.22",
+    "novel": "^0.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^6.20.0",
-    "react-router-dom": "^6.20.0"
+    "react-router-dom": "^6.20.0",
+    "title-editorjs": "^1.0.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
@@ -41,6 +43,7 @@
     "@vitejs/plugin-react": "^4.0.3",
     "autoprefixer": "^10.4.16",
     "editorjs-change-case": "^0.0.3",
+    "editorjs-text-color-plugin": "^2.0.4",
     "eslint": "^8.45.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
