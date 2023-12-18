@@ -18,13 +18,12 @@ import { ButtonBlue } from '../../Components/Buttons/Button1';
 import { PostContext } from '../../context/Post/PostContext';
 import { MarginLeftTool, FirstLetterTool } from './EditorCustomTools';
 import indentPNG from "../../assets/indent.png"
+import { EditPostContext } from '../../context/Post/EditPostContext';
 
-const EditorCanvas = () => {
+const EditPostEditorCanvas = () => {
   const editorInstanceRef = useRef(null);
 
-  const {article, handleArticle} = useContext(PostContext)
-
-  console.log(article)
+  const {article, rawArticle, handleArticle} = useContext(EditPostContext)
 
   useEffect(() => {
     if(!editorInstanceRef.current){
@@ -183,8 +182,11 @@ const EditorCanvas = () => {
         }
       });
     }
+    if (editorInstanceRef.current && rawArticle) {
+        editorInstanceRef.current.render(rawArticle);
+    }
 
-  }, []);
+  }, [rawArticle]);
 
   return (
     <>
@@ -193,5 +195,5 @@ const EditorCanvas = () => {
   )
 }
 
-export default EditorCanvas;
+export default EditPostEditorCanvas;
 

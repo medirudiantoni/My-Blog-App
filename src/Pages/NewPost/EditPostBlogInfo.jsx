@@ -5,24 +5,31 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ButtonBlue, ButtonOrange } from "../../Components/Buttons/Button1";
 import "./Editor.css"
 import posterPNG from "../../assets/poster.png";
-import { PostContext } from "../../context/Post/PostContext";
-import { RootContext } from "../../context/Auth/RootContext";
 import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
 import Dropdown from "../../Components/Dropdown/Dropdown";
+import { EditPostContext } from "../../context/Post/EditPostContext";
 
-const BlogInfo = ({}) => {
-  const [title, setTitle] = useState("");
-  const [cat, setCat] = useState("");
-  const [file, setFile] = useState();
-  const [image, setImage] = useState();
-  const [imgUrl, setImgUrl] = useState();
-  const [cardColor, setCardColor] = useState();
-
+const EditPostBlogInfo = ({}) => {
+  const { title, cat, file } = useContext(EditPostContext)
+  const [isTitle, setIsTitle] = useState();
+  const [isCat, setIsCat] = useState();
+  const [isFile, setIsFile] = useState();
+  const [isImage, setIsImage] = useState();
+  const [isImgUrl, setIsImgUrl] = useState();
+  const [isCardColor, setIsCardColor] = useState();
   const navigate = useNavigate();
 
-  const {article, handlePreview, rawArticle} = useContext(PostContext);
-  const {userInfo, handleSavePreviewPostKey} = useContext(RootContext);
+  console.log({isTitle, isCat, isFile})
+
+  useEffect(() => {
+    if(title){
+        setIsTitle(title || '')
+        setIsCat(cat || '')
+        setIsFile(file || '')
+        setIsImage(file || '')
+    }
+  }, [title, cat, file])
+
 
   const colorOptions = [
     { primary: "#A78BFA", secondary: "#7C3AED", text: "#000", value: "violet", label: <div className="w-3 h-3 rounded-sm bg-violet-500"></div> },
@@ -34,7 +41,7 @@ const BlogInfo = ({}) => {
   ]
 
   const handleSelectedColor = (selectedColor) => {
-    setCardColor(selectedColor)
+    setIsCardColor(selectedColor)
   }
 
   const postDate = () => {
@@ -75,7 +82,7 @@ const BlogInfo = ({}) => {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setImgUrl(downloadURL)
+          setIsImgUrl(downloadURL)
         });
       }
     );
@@ -83,39 +90,16 @@ const BlogInfo = ({}) => {
   
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setFile(file)
+    setIsFile(file)
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImage(reader.result);
+        setIsImage(reader.result);
       };
       reader.readAsDataURL(file);
       uploadFilePoster(file)
     }
   };
-
-  const handleSubmitPost = () => {
-    const postDocRef = doc(db, userInfo.email, postDate())
-    localStorage.setItem("postKey", postDate());
-    setDoc(postDocRef, {
-      date: postDate(),
-      timestamp: new Date(),
-      title: title,
-      category: cat ? cat : null,
-      post: article,
-      posterUrl: imgUrl ? imgUrl : null,
-      status: 'online',
-      rawArticle: rawArticle,
-      // cardColor: cardColor || colorOptions[0],
-    })
-    .then(() => {
-      console.log('berhasil menambahkan post');
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-
-  }
 
   return (
     <div className="">
@@ -124,23 +108,25 @@ const BlogInfo = ({}) => {
         id="title"
         name="title"
         type="text"
+        value={isTitle}
         placeholder="title"
         className="w-full mt-2 mb-4 py-2 px-4 rounded-lg border"
-        onChange={e => setTitle(e.target.value)}
+        onChange={e => setIsTitle(e.target.value)}
       />
       <label htmlFor="category">Post Category</label>
       <input
         id="category"
         name="category"
         type="text"
+        value={isCat}
         placeholder="category"
         className="w-full mt-2 mb-4 py-2 px-4 rounded-lg border"
-        onChange={e => setCat(e.target.value)}
+        onChange={e => setIsCat(e.target.value)}
       />
       <div className="w-full h-fit">
         <p>Post poster</p>
         <div className="w-full h-32 mt-2 mb-4 bg-slate-200 relative rounded-lg overflow-hidden group flex items-center justify-center">
-          {image ? <img src={image} className="w-full h-full object-cover" /> : <img src={posterPNG} className="w-8 h-8 object-cover opacity-20" />}
+          {isImage ? <img src={isImage} className="w-full h-full object-cover" /> : <img src={posterPNG} className="w-8 h-8 object-cover opacity-20" />}
           <label htmlFor="poster" className="">
             <div id="posterLabel" className="w-full h-full bg-slate-200/40 absolute left-0 bottom-0 cursor-pointer group-hover:flex items-center justify-center hidden">
               <img src={posterPNG} alt="add poster" className="w-8 aspect-square object-cover opacity-40" />
@@ -161,13 +147,12 @@ const BlogInfo = ({}) => {
       </div>
       <div className="flex gap-2">
         <ButtonBlue name={"Submit"} onClick={() => {
-          handleSubmitPost();
           navigate('/')
         }} />
-        {article && <ButtonOrange name={"Preview"} onClick={handlePreview} />}
+        {/* {article && <ButtonOrange name={"Preview"} onClick={handlePreview} />} */}
       </div>
     </div>
   );
 };
 
-export default BlogInfo;
+export default EditPostBlogInfo;

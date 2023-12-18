@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { postList } from "./postItems";
 import PostCard from "./PostCard";
 import Dropdown from "../../Components/Dropdown/Dropdown";
-
-// let BlogPosts = [...postList]
+import { db } from "../../Firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { RootContext } from "../../context/Auth/RootContext";
+import { Link } from "react-router-dom";
 
 const BottomSection = ({ data, valFromTop, filterValue }) => {
   const scrollComponentRef = useRef(null);
@@ -11,6 +13,28 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isScrollDown, setIsScrollDown] = useState(false);
   const [fi, setfi] = useState(false);
+  const [dataCollection, setDataCollection] = useState([]);
+
+  const { userInfo } = useContext(RootContext);
+
+  const getDataCollections = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, userInfo.email));
+      let newData = [];
+
+      querySnapshot.forEach((doc) => {
+        newData.push({ id: doc.id, ...doc.data() });
+      });
+
+      setDataCollection(newData);
+    } catch (error) {
+      console.error("Error getting documents: ", error);
+    }
+  };
+
+  useEffect(() => {
+    getDataCollections();
+  }, []);
 
   useEffect(() => {
     let lastScroll = 0;
@@ -54,9 +78,11 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
   };
 
   if (valFromTop.value === "Oldest") {
-    BlogPosts.sort((a, b) => a.date - b.date);
+    // BlogPosts.sort((a, b) => a.date - b.date);
+    dataCollection.sort((a, b) => a.date - b.date);
   } else {
-    BlogPosts.sort((a, b) => b.date - a.date);
+    // BlogPosts.sort((a, b) => b.date - a.date);
+    dataCollection.sort((a, b) => b.date - a.date);
   }
 
   const statusOptions = [
@@ -85,19 +111,17 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
 
   return (
     <div className="w-full flex-1 text-sm overflow-hidden bord2 border-teal-600 relative">
-      <div className={`w-full p-5 h-fit absolute left-0 top-0 origin-top duration-200 ${ filterValue ? 'scale-100' : 'scale-0' }`}>
+      <div
+        className={`w-full p-5 h-fit absolute left-0 top-0 origin-top duration-200 ${
+          filterValue ? "scale-100" : "scale-0"
+        }`}
+      >
         <div className="w-full h-fit p-5 flex flex-col gap-2 bg-slate-200 rounded-lg">
           <div className="relative z-10">
-            <Dropdown
-              options={categoryOptions}
-              onSelect={selectedCat}
-            />
+            <Dropdown options={categoryOptions} onSelect={selectedCat} />
           </div>
           <div className="relative">
-            <Dropdown
-              options={statusOptions}
-              onSelect={selectedStatus}
-            />
+            <Dropdown options={statusOptions} onSelect={selectedStatus} />
           </div>
         </div>
       </div>
@@ -137,7 +161,31 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
         }`}
       >
         <div className="w-full h-fit pb-20">
-          {BlogPosts.length == 0 ? (
+          {dataCollection.length > 0 ? (
+            dataCollection.map((post) => {
+              return (
+                <Link key={post.id} to={`/edit-post/${post.id}`}>
+                  <PostCard
+                    key={post.id}
+                    poster={post.posterUrl}
+                    title={post.title}
+                    category={post.category}
+                    date={post.date}
+                  />
+                </Link>
+              );
+            })
+          ) : (
+            <div className="w-full h-fit py-10 flex justify-center bg-slate-200 rounded-md font-semibold text-slate-800">
+              Tidak ada data
+            </div>
+          )}
+          {dataCollection.length >= 1 ? (
+            <div className="mt-10 w-full h-fit py-10 flex justify-center bg-slate-100 rounded-md font-semibold text-slate-800">
+              Akhir data
+            </div>
+          ) : null}
+          {/* {BlogPosts.length == 0 ? (
             <div className="w-full h-fit py-10 flex justify-center bg-slate-200 rounded-md font-semibold text-slate-800">
               Tidak ada data
             </div>
@@ -159,7 +207,7 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
             <div className="mt-10 w-full h-fit py-10 flex justify-center bg-slate-100 rounded-md font-semibold text-slate-800">
               Akhir data
             </div>
-          ) : null}
+          ) : null} */}
         </div>
       </div>
     </div>

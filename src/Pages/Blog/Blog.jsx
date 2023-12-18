@@ -8,7 +8,6 @@ const Blog = () => {
   const [valFromTop, setValFromTop] = useState({value: 'Newest', label: 'Newest'});
   const [isFilterValue, setIsFilterValue] = useState(false)
 
-  // console.log(isFilterValue)
   const valueAccepted = (val) => {
     setIsScrolled(val.isScrolled);
     setIsScrolDown(val.isScrollDown);

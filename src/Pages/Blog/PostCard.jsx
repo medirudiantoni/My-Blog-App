@@ -11,9 +11,11 @@ const PostCard = ({id, poster, title, category, status, date}) => {
                 </div>
             </div>
             <div className="sm:col-span-2 xl:col-span-1 p-2 pb-1 flex items-center">
-                <div className="w-20 h-20 bg-slate-900 overflow-hidden">
-                    <img src={poster} alt={category} className='w-full h-full object-cover' />
-                </div>
+                {poster ? (
+                    <div className="w-20 h-20 bg-slate-900 overflow-hidden">
+                        <img src={poster} alt={category} className='w-full h-full object-cover' />
+                    </div>
+                ) : <p>-</p>}
             </div>
             <div className="sm:col-span-3 xl:col-span-4 p-2 pb-1 flex items-center">
                 <p className='font-semibold'>{title}</p>

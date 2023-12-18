@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import downPNG from "../../assets/down.png";
 
-const Dropdown = ({ options, onSelect, py2 }) => {
+const Dropdown = ({ options, onSelect, py2, horizontal, shapeValue }) => {
   const [selectedOption, setSelectedOption] = useState(options[0]);
   const [isOpen, setIsOpen] = useState(false);
   const [vw, setVw] = useState(window.innerWidth);
@@ -62,16 +62,16 @@ const Dropdown = ({ options, onSelect, py2 }) => {
                 <div className="origin-top-right absolute right-0 w-fit pt-2">
           <div className="w-fit rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div
-              className="py-2"
+              className={`p-2 ${horizontal ? 'flex gap-2': ''}`}
               role="menu"
-              aria-orientation="vertical"
+              aria-orientation={horizontal ? 'horizontal' : 'vertical'}
               aria-labelledby="options-menu"
             >
               {options.map((option) => (
                 <button
                   key={option.value}
                   onClick={() => handleOptionClick(option)}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  className={`block ${shapeValue ? '' : 'px-4 py-2'} text-sm text-gray-700 hover:bg-gray-100 w-full text-left`}
                   role="menuitem"
                 >
                   {option.label}

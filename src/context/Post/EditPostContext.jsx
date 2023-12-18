@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react'
 import { createContext } from 'react'
 
-export const PostContext = createContext();
-const Provider = PostContext.Provider;
-import EditorJS from '@editorjs/editorjs';
+export const EditPostContext = createContext();
+const Provider = EditPostContext.Provider;
+// import EditorJS from '@editorjs/editorjs';
 
-const PostContextProvider = (Children) => {
+const EditPostContextProvider = (Children) => {
   return () => {
   const [test, setTest] = useState(false);
   const [title, setTitle] = useState("");
@@ -39,4 +39,4 @@ const PostContextProvider = (Children) => {
   }
 }
 
-export default PostContextProvider;
+export default EditPostContextProvider;

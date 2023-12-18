@@ -25,7 +25,7 @@ const TopSection = ({ scrolled, scrollDown, postValue, filterReveal }) => {
     }
   };
   return (
-    <div className="relative">
+    <div className="relative z-10">
       <div
         className={`w-full duration-200 ${
           scrolled ? "h-0 py-0 px-5 overflow-hidden" : "h-fit p-5"

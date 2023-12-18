@@ -19,6 +19,9 @@ import GlobalProvider, { RootContext } from './context/Auth/RootContext';
 import UserProfile from './Pages/UserProfile/UserProfile';
 import EditUserProfile from './Pages/UserProfile/EditUserProfile';
 import PostPreview from './Pages/NewPost/PostPreview';
+import Post from './Pages/Post/Post';
+import Otak_atik from './BuildProcess/Otak_atik';
+import EditPost from './Pages/NewPost/EditPost';
 
 const App = () => {
   const [isUser, setIsUser] = useState()
@@ -71,10 +74,13 @@ const App = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path='/post' element={<Post />} />
+          <Route path='/otak-atik' element={<Otak_atik />} />
           <Route path="/" element={<RequireAuth><Home /></RequireAuth>}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/posts" element={<Posts />} />
             <Route path="/new" element={<NewPost />} />
+            <Route path="/edit-post/:postId" element={<EditPost />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/assets" element={<Assets />} />
             <Route path="/comments" element={<Comments />} />
