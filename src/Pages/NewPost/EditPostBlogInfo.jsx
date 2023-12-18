@@ -1,25 +1,29 @@
 import React, { useContext, useEffect, useState } from "react";
 import { db, storage } from "../../Firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, deleteDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { ButtonBlue, ButtonOrange } from "../../Components/Buttons/Button1";
+import { ButtonBlue, ButtonOrange, ButtonRed } from "../../Components/Buttons/Button1";
 import "./Editor.css"
 import posterPNG from "../../assets/poster.png";
 import { useNavigate } from "react-router";
 import Dropdown from "../../Components/Dropdown/Dropdown";
 import { EditPostContext } from "../../context/Post/EditPostContext";
+import { RootContext } from "../../context/Auth/RootContext";
 
 const EditPostBlogInfo = ({}) => {
-  const { title, cat, file } = useContext(EditPostContext)
+  const { title, cat, file, date, timestamp, color, status, article, rawArticle } = useContext(EditPostContext)
+  const { userInfo } = useContext(RootContext);
   const [isTitle, setIsTitle] = useState();
   const [isCat, setIsCat] = useState();
   const [isFile, setIsFile] = useState();
+  const [isDate, setIsDate] = useState();
+  const [isTime, setIsTime] = useState();
+  const [isColor, setIsColor] = useState();
   const [isImage, setIsImage] = useState();
   const [isImgUrl, setIsImgUrl] = useState();
   const [isCardColor, setIsCardColor] = useState();
+  const [isStatus, setIsStatus] = useState();
   const navigate = useNavigate();
-
-  console.log({isTitle, isCat, isFile})
 
   useEffect(() => {
     if(title){
@@ -27,22 +31,36 @@ const EditPostBlogInfo = ({}) => {
         setIsCat(cat || '')
         setIsFile(file || '')
         setIsImage(file || '')
+        setIsImgUrl(file || '')
+        setIsDate(date || '')
+        setIsTime(timestamp || '')
+        setIsColor(color || '')
+        setIsStatus(status || '')
     }
   }, [title, cat, file])
 
 
   const colorOptions = [
-    { primary: "#A78BFA", secondary: "#7C3AED", text: "#000", value: "violet", label: <div className="w-3 h-3 rounded-sm bg-violet-500"></div> },
-    { primary: "#5EEAD4", secondary: "#0D9488", text: "#000", value: "teal", label: <div className="w-3 h-3 rounded-sm bg-teal-500"></div> },
-    { primary: "#2C2C2C", secondary: "#181818", text: "#fff", value: "dark-gray", label: <div className="w-3 h-3 rounded-sm bg-[#2c2c2c]"></div> },
-    { primary: "#FDE047", secondary: "#EAB308", text: "#000", value: "yellow", label: <div className="w-3 h-3 rounded-sm bg-yellow-500"></div> },
-    { primary: "#7DD3FC", secondary: "#0EA5E9", text: "#000", value: "sky", label: <div className="w-3 h-3 rounded-sm bg-sky-500"></div> },
-    { primary: "#E2E8F0", secondary: "#CBD5E1", text: "#000", value: "slate", label: <div className="w-3 h-3 rounded-sm bg-slate-500"></div> },
+    { primary: "#A78BFA", secondary: "#7C3AED", text: "#000", value: "violet", label: `Violet` },
+    { primary: "#5EEAD4", secondary: "#0D9488", text: "#000", value: "teal", label: 'teal' },
+    { primary: "#2C2C2C", secondary: "#181818", text: "#fff", value: "dark-gray", label: 'dark-gray' },
+    { primary: "#FDE047", secondary: "#EAB308", text: "#000", value: "yellow", label: 'yellow' },
+    { primary: "#7DD3FC", secondary: "#0EA5E9", text: "#000", value: "sky", label: 'sky' },
+    { primary: "#E2E8F0", secondary: "#CBD5E1", text: "#000", value: "slate", label: 'slate' },
   ]
 
   const handleSelectedColor = (selectedColor) => {
-    setIsCardColor(selectedColor)
+    setIsColor(selectedColor)
   }
+
+  const statusOptions = [
+    { value: 'online', label: 'Online' },
+    { value: 'offline', label: 'offline' },
+  ];
+
+  const handleSelectedStatus = (selectedStatus) => {
+    setIsStatus(selectedStatus)
+  } 
 
   const postDate = () => {
     const time = new Date();
@@ -101,6 +119,52 @@ const EditPostBlogInfo = ({}) => {
     }
   };
 
+  const handleSubmitUpdate = () => {
+    console.log({isDate, isTime, isTitle, isCat, article, isImgUrl, isStatus, rawArticle, isColor})
+    const postDocRef = doc(db, userInfo.email, isDate);
+    localStorage.setItem("postKey", isDate);
+    setDoc(postDocRef, {
+      date: isDate,
+      timestamp: isTime,
+      new_timestamp: new Date(),
+      title: isTitle,
+      category: isCat ? isCat : null,
+      post: article,
+      posterUrl: isImgUrl ? isImgUrl : null,
+      status: isStatus,
+      rawArticle: rawArticle,
+      cardColor: isColor,
+    })
+    .then(() => {
+      console.log('berhasil mengubah post');
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  };
+
+  const deletePost = async () => {
+    try {
+      const docRef = doc(db, userInfo.email, isDate);
+      await deleteDoc(docRef);
+      console.log('postingan berhasil dihapus')
+    } catch (error) {
+      console.log('gagal menghapus postingan', error)
+    }
+  }
+
+  const confirmDeletePost = () => {
+    let del = confirm('delete post')
+    if(del){
+      deletePost()
+      alert('postingan dihapus')
+      navigate('/blog')
+    } else {
+      console.log('gagal menghapus')
+      return false;
+    }
+  }
+
   return (
     <div className="">
       <label htmlFor="title">Post Title</label>
@@ -142,12 +206,19 @@ const EditPostBlogInfo = ({}) => {
           />
         </div>
       </div>
-      <div className="flex items-center gap-2 mb-5 flex-wrap">
-        <Dropdown options={colorOptions} onSelect={handleSelectedColor} horizontal={true} shapeValue={true} />
+      <div className="flex gap-2 mb-5 flex-wrap">
+        <Dropdown options={colorOptions} onSelect={handleSelectedColor} />
+        <Dropdown options={statusOptions} onSelect={handleSelectedStatus} />
+      </div>
+      <div className="my-2">
+        <ButtonRed name={"Delete Post"} onClick={() => {
+          confirmDeletePost()
+        }} />
       </div>
       <div className="flex gap-2">
         <ButtonBlue name={"Submit"} onClick={() => {
-          navigate('/')
+          handleSubmitUpdate()
+          navigate('/blog')
         }} />
         {/* {article && <ButtonOrange name={"Preview"} onClick={handlePreview} />} */}
       </div>

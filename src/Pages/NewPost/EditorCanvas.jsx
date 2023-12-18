@@ -24,8 +24,6 @@ const EditorCanvas = () => {
 
   const {article, handleArticle} = useContext(PostContext)
 
-  console.log(article)
-
   useEffect(() => {
     if(!editorInstanceRef.current){
       editorInstanceRef.current = new EditorJS({

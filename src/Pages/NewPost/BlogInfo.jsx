@@ -25,12 +25,12 @@ const BlogInfo = ({}) => {
   const {userInfo, handleSavePreviewPostKey} = useContext(RootContext);
 
   const colorOptions = [
-    { primary: "#A78BFA", secondary: "#7C3AED", text: "#000", value: "violet", label: <div className="w-3 h-3 rounded-sm bg-violet-500"></div> },
-    { primary: "#5EEAD4", secondary: "#0D9488", text: "#000", value: "teal", label: <div className="w-3 h-3 rounded-sm bg-teal-500"></div> },
-    { primary: "#2C2C2C", secondary: "#181818", text: "#fff", value: "dark-gray", label: <div className="w-3 h-3 rounded-sm bg-[#2c2c2c]"></div> },
-    { primary: "#FDE047", secondary: "#EAB308", text: "#000", value: "yellow", label: <div className="w-3 h-3 rounded-sm bg-yellow-500"></div> },
-    { primary: "#7DD3FC", secondary: "#0EA5E9", text: "#000", value: "sky", label: <div className="w-3 h-3 rounded-sm bg-sky-500"></div> },
-    { primary: "#E2E8F0", secondary: "#CBD5E1", text: "#000", value: "slate", label: <div className="w-3 h-3 rounded-sm bg-slate-500"></div> },
+    { primary: "#A78BFA", secondary: "#7C3AED", text: "#000", value: "violet", label: `Violet` },
+    { primary: "#5EEAD4", secondary: "#0D9488", text: "#000", value: "teal", label: 'teal' },
+    { primary: "#2C2C2C", secondary: "#181818", text: "#fff", value: "dark-gray", label: 'dark-gray' },
+    { primary: "#FDE047", secondary: "#EAB308", text: "#000", value: "yellow", label: 'yellow' },
+    { primary: "#7DD3FC", secondary: "#0EA5E9", text: "#000", value: "sky", label: 'sky' },
+    { primary: "#E2E8F0", secondary: "#CBD5E1", text: "#000", value: "slate", label: 'slate' },
   ]
 
   const handleSelectedColor = (selectedColor) => {
@@ -106,7 +106,7 @@ const BlogInfo = ({}) => {
       posterUrl: imgUrl ? imgUrl : null,
       status: 'online',
       rawArticle: rawArticle,
-      // cardColor: cardColor || colorOptions[0],
+      cardColor: cardColor,
     })
     .then(() => {
       console.log('berhasil menambahkan post');
@@ -157,12 +157,12 @@ const BlogInfo = ({}) => {
         </div>
       </div>
       <div className="flex items-center gap-2 mb-5 flex-wrap">
-        <Dropdown options={colorOptions} onSelect={handleSelectedColor} horizontal={true} shapeValue={true} />
+        <Dropdown options={colorOptions} onSelect={handleSelectedColor} />
       </div>
       <div className="flex gap-2">
         <ButtonBlue name={"Submit"} onClick={() => {
           handleSubmitPost();
-          navigate('/')
+          navigate('/post')
         }} />
         {article && <ButtonOrange name={"Preview"} onClick={handlePreview} />}
       </div>

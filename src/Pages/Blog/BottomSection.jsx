@@ -171,6 +171,7 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
                     title={post.title}
                     category={post.category}
                     date={post.date}
+                    status={post.status}
                   />
                 </Link>
               );

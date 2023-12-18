@@ -4,9 +4,12 @@ import { ButtonBlue } from "../../Components/Buttons/Button1";
 import InputSearch from "../../Components/InputSearch/InputSearch";
 import dropDownPNG from "../../assets/drop-down.png";
 import X from '../../assets/circle-xmark.png'
+import { useNavigate } from "react-router";
 
 const TopSection = ({ scrolled, scrollDown, postValue, filterReveal }) => {
   const [isFilter, setIsFilter] = useState(false)
+
+  const navigate = useNavigate()
 
   const handleFilter = () => {
     setIsFilter(!isFilter)
@@ -58,7 +61,7 @@ const TopSection = ({ scrolled, scrollDown, postValue, filterReveal }) => {
             <InputSearch />
           </div>
         </div>
-        <ButtonBlue name={"New Post"} />
+        <ButtonBlue name={"New Post"} onClick={() => navigate('/new')} />
       </div>
     </div>
   );

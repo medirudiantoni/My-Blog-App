@@ -11,15 +11,23 @@ const EditPostContextProvider = (Children) => {
   const [title, setTitle] = useState("");
   const [cat, setCat] = useState("");
   const [file, setFile] = useState();
+  const [date, setDate] = useState();
+  const [timestamp, setTimestamp] = useState();
+  const [color, setColor] = useState();
+  const [status, setStatus] = useState();
   const [article, setArticle] = useState();
   const [rawArticle, setRawArticle] = useState();
   const [isPreview, setIsPreview] = useState(false);
   const [postKey, setPostKey] = useState()
 
-  const handleBlogInfo = (title, cat, file) => {
+  const handleBlogInfo = (title, cat, file, date, time, color, status) => {
     setTitle(title);
     setCat(cat);
     setFile(file)
+    setDate(date)
+    setTimestamp(time)
+    setColor(color)
+    setStatus(status)
   }
 
   const handleArticle = (article, raw) => {
@@ -32,7 +40,7 @@ const EditPostContextProvider = (Children) => {
   }
 
   return (
-    <Provider value={{test, title, cat, file, article, isPreview , rawArticle, handleBlogInfo, handleArticle, handlePreview}}>
+    <Provider value={{test, title, cat, date, timestamp, color, status, file, article, isPreview , rawArticle, handleBlogInfo, handleArticle, handlePreview}}>
       <Children />
     </Provider>
   )

@@ -18,15 +18,19 @@ const EditPost = () => {
 
   const { handleBlogInfo, handleArticle, handlePreview } =
     useContext(EditPostContext);
-  const title = postContent ? postContent.title : false;
-  const cat = postContent ? postContent.category : false;
-  const file = postContent ? postContent.posterUrl : false;
-  const article = postContent ? postContent.post : false;
-  const raw = postContent ? postContent.rawArticle : false;
+  const title = postContent ? postContent.title : null;
+  const cat = postContent ? postContent.category : null;
+  const file = postContent ? postContent.posterUrl : null;
+  const date = postContent ? postContent.date : null;
+  const time = postContent ? postContent.timestamp : null;
+  const color = postContent ? postContent.color : null;
+  const status = postContent ? postContent.status : null;
+  const article = postContent ? postContent.post : null;
+  const raw = postContent ? postContent.rawArticle : null;
 
   useEffect(() => {
     if (postContent) {
-      handleBlogInfo(title, cat, file);
+      handleBlogInfo(title, cat, file, date, time, color, status);
       handleArticle(article, raw);
     }
   }, [postContent]);
