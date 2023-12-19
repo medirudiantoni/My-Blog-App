@@ -9,10 +9,13 @@ import { useNavigate } from "react-router";
 import Dropdown from "../../Components/Dropdown/Dropdown";
 import { EditPostContext } from "../../context/Post/EditPostContext";
 import { RootContext } from "../../context/Auth/RootContext";
+import { NotificationContext } from "../../context/Notification/NotificationContext";
 
 const EditPostBlogInfo = ({}) => {
   const { title, cat, file, date, timestamp, color, status, article, rawArticle } = useContext(EditPostContext)
   const { userInfo } = useContext(RootContext);
+  const { notifications, addNotification, removeNotification } = useContext(NotificationContext);
+
   const [isTitle, setIsTitle] = useState();
   const [isCat, setIsCat] = useState();
   const [isFile, setIsFile] = useState();
@@ -119,8 +122,15 @@ const EditPostBlogInfo = ({}) => {
     }
   };
 
+  const handleNotification = (message) => {
+    const notificationObj = {
+      id: new Date(),
+      message: message,
+    }
+    addNotification(notificationObj)
+  }
+
   const handleSubmitUpdate = () => {
-    console.log({isDate, isTime, isTitle, isCat, article, isImgUrl, isStatus, rawArticle, isColor})
     const postDocRef = doc(db, userInfo.email, isDate);
     localStorage.setItem("postKey", isDate);
     setDoc(postDocRef, {
@@ -136,7 +146,8 @@ const EditPostBlogInfo = ({}) => {
       cardColor: isColor,
     })
     .then(() => {
-      console.log('berhasil mengubah post');
+      // console.log('berhasil mengubah post');
+      handleNotification(`berhasil mengubah postingan: ${isDate}`);
     })
     .catch((error) => {
       console.log(error)

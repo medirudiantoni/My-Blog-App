@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { auth, db } from './Firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -22,12 +23,19 @@ import PostPreview from './Pages/NewPost/PostPreview';
 import Post from './Pages/Post/Post';
 import Otak_atik from './BuildProcess/Otak_atik';
 import EditPost from './Pages/NewPost/EditPost';
+import ModalTop from './Components/Notification/ModalTop';
+import { NotificationContext } from './context/Notification/NotificationContext';
 
 const App = () => {
   const [isUser, setIsUser] = useState()
   const [loading, setLoading] = useState(true);
 
   const { currentUser, handleUser, handleUserData, userData } = useContext(RootContext);
+  const { notifications, removeNotification } = useContext(NotificationContext)
+
+  const handleCloseNotification = (id) => {
+    removeNotification(id)
+  }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -70,28 +78,37 @@ const App = () => {
 
   return (
     <div className="font-poppins">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path='/post' element={<Post />} />
-          <Route path='/otak-atik' element={<Otak_atik />} />
-          <Route path="/" element={<RequireAuth><Home /></RequireAuth>}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/posts" element={<Posts />} />
-            <Route path="/new" element={<NewPost />} />
-            <Route path="/edit-post/:postId" element={<EditPost />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/assets" element={<Assets />} />
-            <Route path="/comments" element={<Comments />} />
-            <Route path="/contributor" element={<Users />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path='/profile' element={<UserProfile />} />
-            <Route path='/edit-profile' element={<EditUserProfile />} />
-          </Route>
-          <Route path="/*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+        <BrowserRouter>
+          {notifications && notifications.map((notifiaction) => {
+            return <ModalTop
+              key={notifiaction.id} 
+              fixed={true}
+              type={notifiaction.type ? notifiaction.type : 'Success'} 
+              message={notifiaction.message}
+              onClose={() =>  handleCloseNotification(notifiaction.id)}
+            />
+          })}
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path='/post' element={<Post />} />
+            <Route path='/otak-atik' element={<Otak_atik />} />
+            <Route path="/" element={<RequireAuth><Home /></RequireAuth>}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/posts" element={<Posts />} />
+              <Route path="/new" element={<NewPost />} />
+              <Route path="/edit-post/:postId" element={<EditPost />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/assets" element={<Assets />} />
+              <Route path="/comments" element={<Comments />} />
+              <Route path="/contributor" element={<Users />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path='/profile' element={<UserProfile />} />
+              <Route path='/edit-profile' element={<EditUserProfile />} />
+            </Route>
+            <Route path="/*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
     </div>
   );
 };

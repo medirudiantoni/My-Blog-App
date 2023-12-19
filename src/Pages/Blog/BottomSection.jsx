@@ -9,10 +9,9 @@ import { Link } from "react-router-dom";
 
 const BottomSection = ({ data, valFromTop, filterValue }) => {
   const scrollComponentRef = useRef(null);
-  const [BlogPosts, setBlogPosts] = useState([...postList]);
+  const [BlogPosts, setBlogPosts] = useState([]);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isScrollDown, setIsScrollDown] = useState(false);
-  const [fi, setfi] = useState(false);
   const [dataCollection, setDataCollection] = useState([]);
 
   const { userInfo } = useContext(RootContext);
@@ -27,6 +26,7 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
       });
 
       setDataCollection(newData);
+      setBlogPosts(newData)
     } catch (error) {
       console.error("Error getting documents: ", error);
     }
@@ -78,11 +78,10 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
   };
 
   if (valFromTop.value === "Oldest") {
-    // BlogPosts.sort((a, b) => a.date - b.date);
-    dataCollection.sort((a, b) => a.date - b.date);
+    BlogPosts.sort((a, b) => a.timestamp - b.timestamp);
   } else {
     // BlogPosts.sort((a, b) => b.date - a.date);
-    dataCollection.sort((a, b) => b.date - a.date);
+    BlogPosts.sort((a, b) => b.timestamp - a.timestamp);
   }
 
   const statusOptions = [
@@ -90,6 +89,7 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
     { value: "online", label: "Online" },
     { value: "offline", label: "Offline" },
   ];
+
   const categoryOptions = [
     { value: "All Category", label: "All Category" },
     { value: "Tutorial", label: "Tutorial" },
@@ -99,13 +99,17 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
   ];
 
   const selectedStatus = (value) => {
-    console.log(value);
+    if(value.value === "All status"){
+      setBlogPosts(dataCollection)
+    } else {
+      setBlogPosts(dataCollection.filter((post) => post.status === value.value))
+    }
   };
   const selectedCat = (value) => {
     if (value.value === "All Category") {
-      setBlogPosts(postList);
+      setBlogPosts(dataCollection);
     } else {
-      setBlogPosts(postList.filter((post) => post.category === value.value));
+      setBlogPosts(dataCollection.filter((post) => post.category === value.value));
     }
   };
 
@@ -161,8 +165,8 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
         }`}
       >
         <div className="w-full h-fit pb-20">
-          {dataCollection.length > 0 ? (
-            dataCollection.map((post) => {
+          {BlogPosts.length > 0 ? (
+            BlogPosts.map((post) => {
               return (
                 <Link key={post.id} to={`/edit-post/${post.id}`}>
                   <PostCard
@@ -181,34 +185,11 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
               Tidak ada data
             </div>
           )}
-          {dataCollection.length >= 1 ? (
-            <div className="mt-10 w-full h-fit py-10 flex justify-center bg-slate-100 rounded-md font-semibold text-slate-800">
-              Akhir data
-            </div>
-          ) : null}
-          {/* {BlogPosts.length == 0 ? (
-            <div className="w-full h-fit py-10 flex justify-center bg-slate-200 rounded-md font-semibold text-slate-800">
-              Tidak ada data
-            </div>
-          ) : (
-            BlogPosts.map((post, i) => {
-              return (
-                <PostCard
-                  key={i}
-                  poster={post.img}
-                  title={post.title}
-                  category={post.category}
-                  status={post.status}
-                  date={formatDate(post.date)}
-                />
-              );
-            })
-          )}
           {BlogPosts.length >= 1 ? (
             <div className="mt-10 w-full h-fit py-10 flex justify-center bg-slate-100 rounded-md font-semibold text-slate-800">
               Akhir data
             </div>
-          ) : null} */}
+          ) : null}
         </div>
       </div>
     </div>

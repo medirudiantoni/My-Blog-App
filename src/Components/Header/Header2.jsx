@@ -8,11 +8,13 @@ import AccountInfo from "./AccountInfo";
 import userPNG from "../../assets/user.png";
 import { RootContext } from "../../context/Auth/RootContext";
 import Notification from "./Notification";
+import { NotificationContext } from "../../context/Notification/NotificationContext";
 
 const Header2 = ({ onToggle }) => {
+  const { notifications } = useContext(NotificationContext)
   const [isAccount, setIsAccount] = useState(false);
   const [isNotification, setIsNotification] = useState(false)
-  const [isThereNotification, setIsThereNotification] = useState(false)
+  // const [isThereNotification, setIsThereNotification] = useState(false)
   const [isUser, setIsUser] = useState()
   const [isPhoto, setIsPhoto] = useState()
   const {userInfo} = useContext(RootContext)
@@ -42,12 +44,12 @@ const Header2 = ({ onToggle }) => {
           className="w-full h-full object-cover"
         />
       </div>
-      <div className="w-fit h-full flex gap-5 items-center relative z-10">
+      <div className="w-fit h-full flex gap-5 items-center relative z-10 cursor-pointer">
         <div onClick={() => {
           setIsNotification(!isNotification)
           setIsAccount(false)
         }} className="w-6 h-6 relative">
-          {isThereNotification && <div className="absolute -top-1 -right-0.5 w-3 h-3 rounded-full bg-blue-600"></div>}
+          {notifications.length > 0 && <div className="absolute -top-1 -right-0.5 w-3 h-3 rounded-full bg-blue-600"></div>}
           <img
             src={bellPng}
             alt="bell"

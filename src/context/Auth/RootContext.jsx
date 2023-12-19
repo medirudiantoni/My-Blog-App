@@ -15,7 +15,8 @@ const GlobalProvider = (Children) => {
     const [currentUser, setCurrentUser]= useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const [userData, setUserData] = useState(null);
-    const [previewPostKey, setPreviewPostKey] = useState()
+    const [previewPostKey, setPreviewPostKey] = useState();
+    const [notification, setNotification] = useState();
     
     const handleUser = (action) => {
       if(action.type === "LOGIN"){
@@ -37,7 +38,7 @@ const GlobalProvider = (Children) => {
       setPreviewPostKey(data)
     }
     return (
-      <Provider value={{currentUser, userInfo, handleUser, handleUserData, previewPostKey, handleSavePreviewPostKey}}>
+      <Provider value={{currentUser, userInfo, previewPostKey, handleUser, handleUserData, handleSavePreviewPostKey}}>
         <Children />
       </Provider>
     )

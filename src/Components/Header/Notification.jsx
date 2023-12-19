@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { NotificationContext } from "../../context/Notification/NotificationContext";
+import ModalTop from "../Notification/ModalTop";
 
 const Notification = ({ isNotification }) => {
+  const { notifications, removeNotification } = useContext(NotificationContext);
   return (
     <div className="absolute top-full right-0 w-screen md:w-96 md:right-24">
       <AnimatePresence mode="wait">
@@ -17,9 +20,22 @@ const Notification = ({ isNotification }) => {
               <div className="w-full pb-2 mb-2 border-b-2 border-black font-semibold">
                 Notification
               </div>
-              <div className="w-full p-5 text-center bg-slate-200 rounded-md">
-                no notification
-              </div>
+              {notifications.length > 0 ? (
+                notifications.map((notification) => {
+                  return (
+                    <ModalTop
+                      key={notification.id}
+                      type={notification.type ? notification.type : "Success"}
+                      message={notification.message}
+                      onClose={() => removeNotification(notification.id)}
+                    />
+                  );
+                })
+              ) : (
+                <div className="w-full p-5 text-center bg-slate-200 rounded-md">
+                  no notification
+                </div>
+              )}
             </div>
           </motion.div>
         )}
