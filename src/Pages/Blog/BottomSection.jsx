@@ -167,18 +167,22 @@ const BottomSection = ({ data, valFromTop, filterValue }) => {
         <div className="w-full h-fit pb-20">
           {BlogPosts.length > 0 ? (
             BlogPosts.map((post) => {
-              return (
-                <Link key={post.id} to={`/edit-post/${post.id}`}>
-                  <PostCard
-                    key={post.id}
-                    poster={post.posterUrl}
-                    title={post.title}
-                    category={post.category}
-                    date={post.date}
-                    status={post.status}
-                  />
-                </Link>
-              );
+              if(post.id === "comment visitors"){
+                return null;
+              } else {
+                return (
+                  <Link key={post.id} to={`/edit-post/${post.id}`}>
+                    <PostCard
+                      key={post.id}
+                      poster={post.posterUrl}
+                      title={post.title}
+                      category={post.category}
+                      date={post.date}
+                      status={post.status}
+                    />
+                  </Link>
+                );
+              }
             })
           ) : (
             <div className="w-full h-fit py-10 flex justify-center bg-slate-200 rounded-md font-semibold text-slate-800">

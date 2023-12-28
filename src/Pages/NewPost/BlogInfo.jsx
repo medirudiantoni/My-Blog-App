@@ -80,6 +80,10 @@ const BlogInfo = ({}) => {
       }
     );
   }
+
+  useEffect(() => {
+    setCardColor(colorOptions[0])
+  }, [])
   
   const handleImageChange = (e) => {
     const file = e.target.files[0];
